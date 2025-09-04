@@ -18,7 +18,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
     [Header("射线检测层 (模型层)")]
     public LayerMask selectableLayer = -1;
 
-    private LeanSelectable currentSelection;
+    private GameObject currentSelection;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -29,10 +29,10 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         if (Physics.Raycast(ray, out hit, 100f, selectableLayer))
         {
             // 点击到了已有物体
-            var selectable = hit.collider.GetComponentInParent<LeanSelectable>();
-            if (selectable != null)
+            var obj = hit.collider.gameObject;
+            if (obj != null)
             {
-                SelectObject(selectable);
+                SelectObject(obj);
                 return;
             }
         }
@@ -49,37 +49,29 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
         GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, parent);
 
-        // 添加 LeanSelectable 组件
-        var selectable = obj.GetComponent<LeanSelectable>();
-        if (selectable == null) selectable = obj.AddComponent<LeanSelectable>();
-
         // 给物体自动加 Lean Touch 控件
         if (obj.GetComponent<LeanDragTranslate>() == null) obj.AddComponent<LeanDragTranslate>();
         if (obj.GetComponent<LeanPinchScale>() == null) obj.AddComponent<LeanPinchScale>();
-        if (obj.GetComponent<LeanTwistRotate>() == null) obj.AddComponent<LeanTwistRotate>();
+        if (obj.GetComponent<LeanTwistRotateAxis>() == null) obj.AddComponent<LeanTwistRotateAxis>();
         
 
         // 自动选中新生成的物体
-        SelectObject(selectable);
+        SelectObject(obj);
     }
 
-    private void SelectObject(LeanSelectable selectable)
+    private void SelectObject(GameObject obj)
     {
         if (currentSelection != null)
         {
-            currentSelection.Deselect();
-            
             // 移除高亮效果
             currentSelection.GetComponent<Outline>().enabled = false;
         }
 
-        currentSelection = selectable;
-        currentSelection.SelfSelected = true;
-        
+        currentSelection = obj;
         // 添加高亮效果
         currentSelection.GetComponent<Outline>().enabled = true;
         
 
-        Debug.Log("选中了: " + selectable.name);
+        Debug.Log("选中了: " + obj.name);
     }
 }
