@@ -2256,6 +2256,8 @@ GameObject:
   - component: {fileID: 1170974768}
   - component: {fileID: 1170974769}
   - component: {fileID: 1170974770}
+  - component: {fileID: 1170974772}
+  - component: {fileID: 1170974771}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -2304,6 +2306,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundImage: {fileID: 1317829146}
   addImageButton: {fileID: 302518077}
+--- !u!114 &1170974771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170974767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 801d0d506e4503f4cb8729e3868bb030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pinchTwistKey: 306
+  movePivotKey: 308
+  multiDragKey: 308
+  fingerTexture: {fileID: 2800000, guid: 25c48be3a87ea0f489a6d41c9c9a2194, type: 3}
+--- !u!114 &1170974772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170974767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc98219a83dff145947365dc914d06e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tapThreshold: 0.2
+  swipeThreshold: 100
+  referenceDpi: 200
+  guiLayers:
+    serializedVersion: 2
+    m_Bits: 32
+  useTouch: 1
+  useHover: 1
+  useMouse: 1
+  useSimulator: 1
+  disableMouseEmulation: 1
+  recordFingers: 1
+  recordThreshold: 5
+  recordLimit: 10
 --- !u!1 &1190101025
 GameObject:
   m_ObjectHideFlags: 0
@@ -2825,7 +2869,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.3450317, y: 0.07650757}
+  m_AnchoredPosition: {x: 2.3450317, y: 0.07647705}
   m_SizeDelta: {x: 4.69, y: -0.153}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317829146
@@ -3694,7 +3738,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.74375004, y: 1}
-  m_AnchoredPosition: {x: 4.807007, y: -0.04019165}
+  m_AnchoredPosition: {x: 4.807007, y: -0.040161133}
   m_SizeDelta: {x: 9.605, y: 0.08}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1853527597
@@ -3710,8 +3754,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 776448806032566957, guid: 097ee41e0f7a69b41949199a0014212c, type: 3}
+  outlineColor: {r: 0, g: 0.59939575, b: 1, a: 0}
   parent: {fileID: 609474232}
   mainCamera: {fileID: 963194227}
+  selectableLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &1904441888
 GameObject:
   m_ObjectHideFlags: 0

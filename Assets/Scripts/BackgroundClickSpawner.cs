@@ -8,7 +8,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 {
     [Header("要生成的3D模型 Prefab")]
     public GameObject prefab;
-
+    
     [Header("生成的父物体")]
     public Transform parent; // 一般设为一个空物体，比如 "SpawnRoot"
 
@@ -57,15 +57,6 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         if (obj.GetComponent<LeanDragTranslate>() == null) obj.AddComponent<LeanDragTranslate>();
         if (obj.GetComponent<LeanPinchScale>() == null) obj.AddComponent<LeanPinchScale>();
         if (obj.GetComponent<LeanTwistRotate>() == null) obj.AddComponent<LeanTwistRotate>();
-        
-        // 给物体自动加 Outline 控件
-        if (obj.GetComponent<Outline>() == null)
-        {
-            var outline = obj.AddComponent<Outline>();
-            outline.OutlineMode = Outline.Mode.OutlineVisible;
-            outline.OutlineColor = Color.cyan;
-            outline.OutlineWidth = 10f;
-        }
         
 
         // 自动选中新生成的物体
