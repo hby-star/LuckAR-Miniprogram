@@ -50,6 +50,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, parent);
 
         // 给物体自动加 Lean Touch 控件
+        if (obj.GetComponent<LeanSelectableByFinger>() == null) obj.AddComponent<LeanSelectableByFinger>();
         if (obj.GetComponent<LeanDragTranslate>() == null) obj.AddComponent<LeanDragTranslate>();
         if (obj.GetComponent<LeanPinchScale>() == null) obj.AddComponent<LeanPinchScale>();
         if (obj.GetComponent<LeanTwistRotateAxis>() == null) obj.AddComponent<LeanTwistRotateAxis>();
@@ -63,11 +64,20 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
     {
         if (currentSelection != null)
         {
+            // 移除之前选中的物体的选中状态
+            var selectable = currentSelection.GetComponent<LeanSelectableByFinger>();
+            selectable.Deselect();
+            
             // 移除高亮效果
             currentSelection.GetComponent<Outline>().enabled = false;
         }
 
         currentSelection = obj;
+        
+        // 选中新的物体
+        var newSelectable = currentSelection.GetComponent<LeanSelectableByFinger>();
+        newSelectable.SelfSelected = true;
+        
         // 添加高亮效果
         currentSelection.GetComponent<Outline>().enabled = true;
         
