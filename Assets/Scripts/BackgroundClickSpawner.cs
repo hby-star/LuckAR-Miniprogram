@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Lean.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,19 +8,41 @@ using Unity.VisualScripting;
 
 public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 {
-    [Header("要生成的3D模型 Prefab")]
-    public GameObject prefab;
-    
-    [Header("生成的父物体")]
-    public Transform parent; // 一般设为一个空物体，比如 "SpawnRoot"
+    [Header("模型库")]
+    public List<GameObject> models;
 
-    [Header("主摄像机")]
+    public List<GameObject> modelSelectBoxes;
+
+    public int currentModelIndex = -1;
+    
+    [Header("颜色库")]
+    public List<Color> colors;
+    
+    public List<GameObject> colorSelectBoxes;
+
+    public int currentColorIndex = -1;
+    
+    [Header("其他设置")]
+    public Transform spawnRoot; // 一般设为一个空物体，比如 "SpawnRoot"
+
     public Camera mainCamera;
 
-    [Header("射线检测层 (模型层)")]
     public LayerMask selectableLayer = -1;
 
-    private GameObject currentSelection;
+    private GameObject _currentSelection;
+
+    private void Start()
+    {
+        foreach (var modelSelect in modelSelectBoxes)
+        {
+            modelSelect.SetActive(false);
+        }
+
+        foreach (var colorSelect in colorSelectBoxes)
+        {
+            colorSelect.SetActive(false);
+        }
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -38,6 +62,12 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         }
 
         // 没点到 → 在背景生成新物体
+        if(currentModelIndex < 0 || currentColorIndex < 0)
+        {
+            Debug.Log("请先选择模型和颜色");
+            return;
+        }
+        
         SpawnNew(screenPos);
     }
 
@@ -47,7 +77,11 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
             new Vector3(screenPos.x, screenPos.y, 5f) // 距相机 5 单位
         );
 
-        GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, parent);
+        GameObject obj = Instantiate(models[currentModelIndex], worldPos, Quaternion.identity, spawnRoot);
+        MeshRenderer objRenderer = obj.GetComponent<MeshRenderer>();
+        objRenderer.material.color = colors[currentColorIndex];
+        OnSelectModel(-1);
+        OnSelectColor(-1);
 
         // 给物体自动加 Lean Touch 控件
         if (obj.GetComponent<LeanSelectableByFinger>() == null) obj.AddComponent<LeanSelectableByFinger>();
@@ -62,26 +96,60 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
     private void SelectObject(GameObject obj)
     {
-        if (currentSelection != null)
+        if (_currentSelection != null)
         {
             // 移除之前选中的物体的选中状态
-            var selectable = currentSelection.GetComponent<LeanSelectableByFinger>();
+            var selectable = _currentSelection.GetComponent<LeanSelectableByFinger>();
             selectable.Deselect();
             
             // 移除高亮效果
-            currentSelection.GetComponent<Outline>().enabled = false;
+            _currentSelection.GetComponent<Outline>().enabled = false;
         }
 
-        currentSelection = obj;
+        _currentSelection = obj;
         
         // 选中新的物体
-        var newSelectable = currentSelection.GetComponent<LeanSelectableByFinger>();
+        var newSelectable = _currentSelection.GetComponent<LeanSelectableByFinger>();
         newSelectable.SelfSelected = true;
         
         // 添加高亮效果
-        currentSelection.GetComponent<Outline>().enabled = true;
+        _currentSelection.GetComponent<Outline>().enabled = true;
         
 
         Debug.Log("选中了: " + obj.name);
+    }
+
+    public void OnSelectModel(int index)
+    {
+        currentModelIndex = index;
+
+        for (int i = 0; i < modelSelectBoxes.Count; i++)
+        {
+            if (i == index)
+            {
+                modelSelectBoxes[i].SetActive(true);
+            }
+            else
+            {
+                modelSelectBoxes[i].SetActive(false);
+            }
+        }
+    }
+
+    public void OnSelectColor(int index)
+    {
+        currentColorIndex = index;
+
+        for (int i = 0; i < colorSelectBoxes.Count; i++)
+        {
+            if (i == index)
+            {
+                colorSelectBoxes[i].SetActive(true);
+            }
+            else
+            {
+                colorSelectBoxes[i].SetActive(false);
+            }
+        }
     }
 }
