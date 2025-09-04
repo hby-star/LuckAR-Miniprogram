@@ -21,8 +21,9 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
     public List<GameObject> colorSelectBoxes;
 
     public int currentColorIndex = -1;
+
+    [Header("其他设置")] public GameObject deleteButton;
     
-    [Header("其他设置")]
     public Transform spawnRoot; // 一般设为一个空物体，比如 "SpawnRoot"
 
     public Camera mainCamera;
@@ -33,6 +34,8 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
+        deleteButton.SetActive(false);
+        
         foreach (var modelSelect in modelSelectBoxes)
         {
             modelSelect.SetActive(false);
@@ -64,6 +67,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         // 没点到 → 在背景生成新物体
         if(currentModelIndex < 0 || currentColorIndex < 0)
         {
+            DeSelectAll();
             Debug.Log("请先选择模型和颜色");
             return;
         }
@@ -96,6 +100,10 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
     private void SelectObject(GameObject obj)
     {
+        deleteButton.SetActive(true);
+        var buttonComponent = deleteButton.GetComponent<UnityEngine.UI.Button>();
+        buttonComponent.onClick.AddListener(OnClickDelete);
+        
         if (_currentSelection != null)
         {
             // 移除之前选中的物体的选中状态
@@ -117,6 +125,21 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         
 
         Debug.Log("选中了: " + obj.name);
+    }
+    
+    private void DeSelectAll()
+    {
+        deleteButton.SetActive(false);
+        var buttonComponent = deleteButton.GetComponent<UnityEngine.UI.Button>();
+        buttonComponent.onClick.RemoveListener(OnClickDelete);
+        
+        if (_currentSelection != null)
+        {
+            var selectable = _currentSelection.GetComponent<LeanSelectableByFinger>();
+            selectable.Deselect();
+            _currentSelection.GetComponent<Outline>().enabled = false;
+            _currentSelection = null;
+        }
     }
 
     public void OnSelectModel(int index)
@@ -151,5 +174,15 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
                 colorSelectBoxes[i].SetActive(false);
             }
         }
+    }
+    
+    public void OnClickDelete()
+    {
+        if (_currentSelection != null)
+        {
+            Destroy(_currentSelection);
+            _currentSelection = null;
+        }
+        DeSelectAll();
     }
 }
