@@ -1,23 +1,23 @@
 {
-  "appid": "tt740d02b0eb01e4a907",
-  "projectname": "LuckAR",
-  "unity": {
-    "build": {
-      "webgl": "C:\\Users\\Admin\\Desktop\\Projects\\Unity\\LuckAR\\tt-minigame\\webgl_package-20250830_195023.zip",
-      "native": {
-        "il2cpp": "",
-        "apk": "",
-        "fullApk": ""
-      },
-      "instantGame": ""
+    "appid": "tt740d02b0eb01e4a907",
+    "projectname": "LuckAR",
+    "unity": {
+        "build": {
+            "webgl": "C:\\Users\\Admin\\Desktop\\Projects\\Unity\\LuckAR\\tt-minigame\\webgl_package-20250830_195023.zip",
+            "native": {
+                "il2cpp": "",
+                "apk": "",
+                "fullApk": ""
+            },
+            "instantGame": ""
+        },
+        "publishType": "3",
+        "starkSdkVersion": "Without StarkSDK",
+        "unityToolsVersion": "",
+        "unityEngineVersion": "2022.3.62f1",
+        "arch": ""
     },
-    "publishType": "3",
-    "starkSdkVersion": "Without StarkSDK",
-    "unityToolsVersion": "",
-    "unityEngineVersion": "2022.3.62f1",
-    "arch": ""
-  },
-  "setting": {
-    "urlCheck": true
-  }
+    "setting": {
+        "urlCheck": true
+    }
 }

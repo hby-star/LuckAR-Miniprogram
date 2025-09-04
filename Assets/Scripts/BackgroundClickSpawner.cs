@@ -2,6 +2,7 @@ using Lean.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Lean.Touch;
+using Unity.VisualScripting;
 
 public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 {
@@ -56,6 +57,16 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         if (obj.GetComponent<LeanDragTranslate>() == null) obj.AddComponent<LeanDragTranslate>();
         if (obj.GetComponent<LeanPinchScale>() == null) obj.AddComponent<LeanPinchScale>();
         if (obj.GetComponent<LeanTwistRotate>() == null) obj.AddComponent<LeanTwistRotate>();
+        
+        // 给物体自动加 Outline 控件
+        if (obj.GetComponent<Outline>() == null)
+        {
+            var outline = obj.AddComponent<Outline>();
+            outline.OutlineMode = Outline.Mode.OutlineVisible;
+            outline.OutlineColor = Color.cyan;
+            outline.OutlineWidth = 10f;
+        }
+        
 
         // 自动选中新生成的物体
         SelectObject(selectable);
@@ -66,10 +77,17 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         if (currentSelection != null)
         {
             currentSelection.Deselect();
+            
+            // 移除高亮效果
+            currentSelection.GetComponent<Outline>().enabled = false;
         }
 
         currentSelection = selectable;
         currentSelection.SelfSelected = true;
+        
+        // 添加高亮效果
+        currentSelection.GetComponent<Outline>().enabled = true;
+        
 
         Debug.Log("选中了: " + selectable.name);
     }
