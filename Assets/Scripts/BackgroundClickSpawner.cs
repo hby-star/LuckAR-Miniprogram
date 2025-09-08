@@ -15,7 +15,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
     public int currentModelIndex = -1;
     
-    [Header("颜色库")]
+    [Header("颜色库-去除")]
     public List<Color> colors;
     
     public List<GameObject> colorSelectBoxes;
@@ -41,10 +41,10 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
             modelSelect.SetActive(false);
         }
 
-        foreach (var colorSelect in colorSelectBoxes)
-        {
-            colorSelect.SetActive(false);
-        }
+        // foreach (var colorSelect in colorSelectBoxes)
+        // {
+        //     colorSelect.SetActive(false);
+        // }
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -65,10 +65,11 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         }
 
         // 没点到 → 在背景生成新物体
-        if(currentModelIndex < 0 || currentColorIndex < 0)
+        // if(currentModelIndex < 0 || currentColorIndex < 0)
+        if(currentModelIndex < 0)
         {
             DeSelectAll();
-            Debug.Log("请先选择模型和颜色");
+            Debug.Log("请先选择物体");
             return;
         }
         
@@ -83,9 +84,9 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
 
         GameObject obj = Instantiate(models[currentModelIndex], worldPos, Quaternion.identity, spawnRoot);
         MeshRenderer objRenderer = obj.GetComponent<MeshRenderer>();
-        objRenderer.material.color = colors[currentColorIndex];
+        //objRenderer.material.color = colors[currentColorIndex];
         OnSelectModel(-1);
-        OnSelectColor(-1);
+        //OnSelectColor(-1);
 
         // 给物体自动加 Lean Touch 控件
         if (obj.GetComponent<LeanSelectableByFinger>() == null) obj.AddComponent<LeanSelectableByFinger>();
