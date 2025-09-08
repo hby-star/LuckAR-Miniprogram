@@ -59,7 +59,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
             var obj = hit.collider.gameObject;
             if (obj != null)
             {
-                SelectObject(obj);
+                SelectObject(obj.transform.parent.gameObject);
                 return;
             }
         }
@@ -79,10 +79,11 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
     private void SpawnNew(Vector2 screenPos)
     {
         Vector3 worldPos = mainCamera.ScreenToWorldPoint(
-            new Vector3(screenPos.x, screenPos.y, 5f) // 距相机 5 单位
+            new Vector3(screenPos.x, screenPos.y, 10f) // 距相机 5 单位
         );
 
-        GameObject obj = Instantiate(models[currentModelIndex], worldPos, Quaternion.identity, spawnRoot);
+        GameObject obj = Instantiate(models[currentModelIndex], worldPos, Quaternion.Euler(20f, 180f, 0f), spawnRoot);
+        obj.transform.localScale = Vector3.one * 2f;
         MeshRenderer objRenderer = obj.GetComponent<MeshRenderer>();
         //objRenderer.material.color = colors[currentColorIndex];
         OnSelectModel(-1);
