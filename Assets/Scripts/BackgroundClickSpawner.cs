@@ -83,7 +83,7 @@ public class BackgroundClickSpawner : MonoBehaviour, IPointerClickHandler
         );
 
         GameObject obj = Instantiate(models[currentModelIndex], worldPos, Quaternion.Euler(20f, 180f, 0f), spawnRoot);
-        obj.transform.localScale = Vector3.one * 2f;
+        obj.transform.localScale *= 2f;
         MeshRenderer objRenderer = obj.GetComponent<MeshRenderer>();
         //objRenderer.material.color = colors[currentColorIndex];
         OnSelectModel(-1);
