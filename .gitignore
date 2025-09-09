@@ -74,3 +74,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 /tt-minigame/
+Assets/Resources/Fonts/SourceHanSansSC-Regular SDF.asset
+Assets/Resources/Fonts/SourceHanSansSC-Regular SDF.asset.meta
+Assets/Resources/Fonts/SourceHanSansSC-Regular.otf
+Assets/Resources/Fonts/SourceHanSansSC-Regular.otf.meta
