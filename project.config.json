@@ -3,7 +3,7 @@
   "projectname": "LuckAR",
   "unity": {
     "build": {
-      "webgl": "tt-minigame\\webgl_package-20250911_132519.zip",
+      "webgl": "C:\\Users\\Admin\\Desktop\\Projects\\Unity\\LuckAR-Miniprogram\\tt-minigame\\webgl_package-20250911_145238.zip",
       "native": {
         "il2cpp": "",
         "apk": "",
