@@ -14,10 +14,22 @@ public class UIManager : MonoBehaviour
     public GameObject saveImageButton;
     public BackgroundClickSpawner spawner;
     
+    public GameObject saveResultPopup;
+    public TMPro.TMP_Text saveResultText;
+    private CanvasGroup popupCanvasGroup;
+    private Coroutine popupRoutine;
+    public float fadeDuration = 0.4f; // 渐变时长
+    public float displayTime = 0.1f;   // 停留时长
+    
     // Start is called before the first frame update
     void Start()
     {
-        
+        popupCanvasGroup = saveResultPopup.GetComponent<CanvasGroup>();
+        if (popupCanvasGroup == null)
+        {
+            popupCanvasGroup = saveResultPopup.AddComponent<CanvasGroup>();
+        }
+        saveResultPopup.SetActive(false);
     }
 
     // Update is called once per frame
@@ -90,10 +102,12 @@ public class UIManager : MonoBehaviour
             {
                 string resultOutput = "Success, message: " + result;
                 Debug.Log(resultOutput);
+                ShowPopup("图片保存成功");
             },
             fail = (msg) =>
             {
                 Debug.Log("Fail, message: " + msg);
+                ShowPopup("图片保存失败");
             },
             complete = () =>
             {
@@ -161,4 +175,43 @@ public class UIManager : MonoBehaviour
         return filePath;
     }
 
+    private void ShowPopup(string message)
+    {
+        saveResultText.text = message;
+
+        if (popupRoutine != null)
+        {
+            StopCoroutine(popupRoutine);
+        }
+        popupRoutine = StartCoroutine(ShowAndHidePopup());
+    }
+
+    private IEnumerator ShowAndHidePopup()
+    {
+        saveResultPopup.SetActive(true);
+
+        // 渐显
+        yield return StartCoroutine(FadeCanvasGroup(0f, fadeDuration));
+        
+        // 停留
+        //yield return new WaitForSeconds(displayTime);
+
+        // 渐隐
+        //yield return StartCoroutine(FadeCanvasGroup(fadeDuration, 0f));
+
+        saveResultPopup.SetActive(false);
+    }
+
+    private IEnumerator FadeCanvasGroup(float from, float to)
+    {
+        float elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / fadeDuration;
+            popupCanvasGroup.alpha = Mathf.Lerp(from, to, t);
+            yield return null;
+        }
+        popupCanvasGroup.alpha = to;
+    }
 }
