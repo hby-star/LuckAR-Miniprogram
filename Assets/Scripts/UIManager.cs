@@ -9,6 +9,10 @@ public class UIManager : MonoBehaviour
 {
     public Image backgroundImage;
     public GameObject addImageButton;
+
+    public GameObject deleteObjectButton;
+    public GameObject saveImageButton;
+    public BackgroundClickSpawner spawner;
     
     // Start is called before the first frame update
     void Start()
@@ -27,7 +31,7 @@ public class UIManager : MonoBehaviour
         TT.ChooseImage(new TTChooseImageParam
         {
             count = 1,
-            sourceType = new[] { "album" },
+            sourceType = new[] { "album", "camera" },
             success = (result) =>
             {
                 string resultOutput = "Choose Message Success, message: " + result.errMsg;
@@ -72,8 +76,89 @@ public class UIManager : MonoBehaviour
         
         // 设置到UI Image上
         backgroundImage.sprite = newSprite;
-        
-        // 拉伸填充
+        backgroundImage.type = Image.Type.Simple;
         backgroundImage.preserveAspect = true;
     }
+    
+    public void OnTouchSaveImage()
+    {
+        string imagePath = GetSaveImageFromCamera();
+        TT.SaveImageToPhotosAlbum(new TTSaveImageToPhotosAlbumParam
+        {
+            filePath = imagePath,
+            success = (result) =>
+            {
+                string resultOutput = "Success, message: " + result;
+                Debug.Log(resultOutput);
+            },
+            fail = (msg) =>
+            {
+                Debug.Log("Fail, message: " + msg);
+            },
+            complete = () =>
+            {
+                Debug.Log("Complete");
+            }
+        });
+    }
+
+    private string GetSaveImageFromCamera()
+    {
+        deleteObjectButton.SetActive(false);
+        saveImageButton.SetActive(false);
+
+        var mainCamera = Camera.main;
+        int width = Screen.width;
+        int height = Screen.height;
+
+        // 渲染到RT
+        RenderTexture rt = new RenderTexture(width, height, 24);
+        mainCamera.targetTexture = rt;
+        mainCamera.Render();
+
+        // 计算RectTransform对应的屏幕Rect
+        Vector3[] corners = new Vector3[4];
+        RectTransform targetRect = backgroundImage.rectTransform;
+        targetRect.GetWorldCorners(corners);
+
+        Vector2 min = RectTransformUtility.WorldToScreenPoint(mainCamera, corners[0]);
+        Vector2 max = RectTransformUtility.WorldToScreenPoint(mainCamera, corners[2]);
+
+        Rect screenRect = new Rect(
+            min.x,
+            min.y,
+            max.x - min.x,
+            max.y - min.y
+        );
+
+        // 创建Texture2D并读取区域
+        RenderTexture.active = rt;
+        Texture2D tex = new Texture2D((int)screenRect.width, (int)screenRect.height, TextureFormat.RGB24, false);
+        tex.ReadPixels(screenRect, 0, 0);
+        tex.Apply();
+
+        // 清理
+        mainCamera.targetTexture = null;
+        RenderTexture.active = null;
+        Destroy(rt);
+
+        // 保存到TTSDK文件系统
+        byte[] pngData = tex.EncodeToPNG();
+        string base64Str = System.Convert.ToBase64String(pngData);
+
+        string filePath = $"ttfile://user/capture_{System.DateTime.Now.Ticks}.png";
+
+        var fileSystemManager = TT.GetFileSystemManager();
+        fileSystemManager.WriteFileSync(filePath, base64Str, "base64");
+
+        // 恢复按钮
+        saveImageButton.SetActive(true);
+        if (spawner.currentModelIndex != -1)
+        {
+            deleteObjectButton.SetActive(true);
+        }
+
+        return filePath;
+    }
+
 }
