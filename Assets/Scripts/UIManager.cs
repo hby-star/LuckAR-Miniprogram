@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     public TMPro.TMP_Text saveResultText;
     private CanvasGroup popupCanvasGroup;
     private Coroutine popupRoutine;
+    public Animator popupAnimator;
     public float fadeDuration = 0.4f; // 渐变时长
     public float displayTime = 0.1f;   // 停留时长
     
@@ -29,7 +30,7 @@ public class UIManager : MonoBehaviour
         {
             popupCanvasGroup = saveResultPopup.AddComponent<CanvasGroup>();
         }
-        saveResultPopup.SetActive(false);
+        //saveResultPopup.SetActive(false);
     }
 
     // Update is called once per frame
@@ -179,11 +180,16 @@ public class UIManager : MonoBehaviour
     {
         saveResultText.text = message;
 
-        if (popupRoutine != null)
+        if (popupAnimator != null)
         {
-            StopCoroutine(popupRoutine);
+            popupAnimator.Play("SaveResultAnimation", -1, 0f);
         }
-        popupRoutine = StartCoroutine(ShowAndHidePopup());
+
+        // if (popupRoutine != null)
+        // {
+        //     StopCoroutine(popupRoutine);
+        // }
+        // popupRoutine = StartCoroutine(ShowAndHidePopup());
     }
 
     private IEnumerator ShowAndHidePopup()
@@ -194,7 +200,7 @@ public class UIManager : MonoBehaviour
         yield return StartCoroutine(FadeCanvasGroup(0f, fadeDuration));
         
         // 停留
-        //yield return new WaitForSeconds(displayTime);
+        yield return new WaitForSeconds(displayTime);
 
         // 渐隐
         //yield return StartCoroutine(FadeCanvasGroup(fadeDuration, 0f));
